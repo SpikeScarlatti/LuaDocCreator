@@ -3,11 +3,23 @@ import java.util.ArrayList;
 
 public class LuaProject {
     private File luaProject;
+    private boolean containsLuaFile;
+    private String output;
 
     public LuaProject(File luaProject){
         this.luaProject = luaProject;
+        this.containsLuaFile = false;
+        this.output = "";
 
         loadFiles(this.luaProject);
+    }
+
+    public boolean isContainsLuaFile(){
+        return containsLuaFile;
+    }
+
+    public String getOutput(){
+        return output;
     }
 
     public void loadFiles(File f){
@@ -18,12 +30,14 @@ public class LuaProject {
                     loadFiles(file);
                 }else if (file.isFile() && Utils.getFileExtension(file).equals("lua")){
                     LuaFile luaFile = new LuaFile(file);
-                    luaFile.printFunctionName();
+                    this.containsLuaFile = true;
+                    this.output += luaFile.generateLuaDoc();
                 }
             }
-        }else{
+        }else if (Utils.getFileExtension(f).equals("lua")){
             LuaFile luaFile = new LuaFile(f);
-            luaFile.printFunctionName();
+            this.containsLuaFile = true;
+            this.output += luaFile.generateLuaDoc();
         }
     }
 }

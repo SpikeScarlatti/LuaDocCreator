@@ -1,10 +1,31 @@
+import javax.swing.*;
 import java.io.File;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        LuaProject luaProject = new LuaProject(new File("C:\\Users\\thiba\\Desktop\\RageUI-master (1)\\RageUI-master\\src\\client"));
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Project path or lua file path : ");
+        String path = sc.nextLine();
 
-        //System.out.println(luaProject);
+        LuaProject luaProject = new LuaProject(new File(path));
+        if(!luaProject.isContainsLuaFile()){
+            System.out.println("Project does not have .lua file !");
+        }
+
+        System.out.println("Save output ? (Y/N)");
+
+        String saveOutput = sc.next();
+        String output = luaProject.getOutput();
+        String header = "--- Output generated from LuaDocCreator created by Spike Scarlatti. https://github.com/SpikeScarlatti/LuaDocCreator";
+        System.out.println(header);
+        System.out.println();
+        System.out.println(output);
+
+        if(saveOutput.toUpperCase().equals("Y")){
+            String filename = "luaDocOutput_SpikeScarlatti.lua";
+            TxtFile outputFile = new TxtFile(filename, path +"\\" + filename);
+            outputFile.saveFile(header, output);
+        }
     }
 }

@@ -9,16 +9,17 @@ public class LuaFile {
         this.file = file;
     }
 
-    public void printFunctionName(){
-        ArrayList<String> stringBuffer = new ArrayList<>();
+    public String generateLuaDoc(){
+        StringBuilder output = new StringBuilder();
         try {
             reader = new BufferedReader(new FileReader(file.getAbsolutePath()));
             String line = reader.readLine();
 
+            ArrayList<String> stringBuffer = new ArrayList<>();
             while (line != null) {
                 stringBuffer.add(line);
                 if(line.startsWith("function ") && line.endsWith(")")){
-                    processFunction(stringBuffer);
+                    output.append(processFunction(stringBuffer));
                     stringBuffer.clear();
                 }
 
@@ -26,12 +27,14 @@ public class LuaFile {
             }
 
             reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
+
+        return output.toString();
     }
 
-    private void processFunction(ArrayList<String> stringBuffer){
+    private String processFunction(ArrayList<String> stringBuffer){
+        StringBuilder output = new StringBuilder();
         int linesCount = stringBuffer.size();
 
         int iLine = linesCount - 2;
@@ -45,16 +48,20 @@ public class LuaFile {
         }
 
         if (iLine == linesCount - 2){
-            startDocLine = linesCount - 1;
-        }
+            output.append(stringBuffer.get(linesCount - 1)).append(" end\n\n");
+        }else{
+            for(int iDocLine = startDocLine; iDocLine < linesCount; iDocLine++){
+                if (iDocLine == linesCount - 1){
+                    output.append(stringBuffer.get(iDocLine)).append(" end\n");
+                }else{
+                    output.append(stringBuffer.get(iDocLine));
+                }
 
-        for(int iDocLine = startDocLine; iDocLine < linesCount; iDocLine++){
-            if (iDocLine == linesCount - 1){
-                System.out.print(stringBuffer.get(iDocLine) + "end\n\n");
-            }else{
-                System.out.println(stringBuffer.get(iDocLine));
+                output.append("\n");
             }
         }
+
+        return output.toString();
     }
 
     public int getParamsCount(String line){
