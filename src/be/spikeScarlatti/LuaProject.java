@@ -1,5 +1,6 @@
+package be.spikeScarlatti;
+
 import java.io.File;
-import java.util.ArrayList;
 
 public class LuaProject {
     private File luaProject;

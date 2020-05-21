@@ -1,4 +1,5 @@
-import javax.swing.*;
+package be.spikeScarlatti;
+
 import java.io.File;
 import java.util.Scanner;
 
